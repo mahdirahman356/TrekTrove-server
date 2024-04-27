@@ -26,12 +26,19 @@ async function run() {
     await client.connect();
     const database = client.db("touristsSpotDB");
     const touristsSpotCollection = database.collection("touristsSpot");
+    const countryCollection = database.collection("country");
+
     
     app.get("/touristsSpot", async(req, res) => {
-        const cursor = touristsSpotCollection.find();
+        const cursor = touristsSpotCollection.find(req.query).sort('-touristSpot');
         const result = await cursor.toArray()
         res.send(result)
     })
+    app.get("/country", async(req, res) => {
+      const cursor = countryCollection.find();
+      const result = await cursor.toArray()
+      res.send(result)
+  })
 
     app.get("/touristsSpot/:id", async(req, res) => {
       const id = req.params.id
@@ -46,7 +53,14 @@ async function run() {
       const result = await touristsSpotCollection.find(query).toArray();
       res.send(result);
     });
-    
+
+
+    app.get("/touristsSpot/countryName/:countryName", async (req, res) => {
+      const countryName = req.params.countryName;
+      const query = { countryName: countryName };
+      const result = await touristsSpotCollection.find(query).toArray();
+      res.send(result);
+    });
 
     app.post("/touristsSpot", async(req, res) =>{
         const tourists = req.body
