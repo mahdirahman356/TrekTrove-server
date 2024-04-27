@@ -40,6 +40,20 @@ async function run() {
       res.send(result)  
     })
 
+    app.get("/touristsSpot/email/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await touristsSpotCollection.find(query).toArray();
+      res.send(result);
+    });
+    
+
+    app.post("/touristsSpot", async(req, res) =>{
+        const tourists = req.body
+        const result = await touristsSpotCollection.insertOne(tourists);
+        res.send(result)
+    })
+
     app.put("/touristsSpot/:id", async(req, res) => {
       const id = req.params.id
       const tourists = req.body
@@ -65,10 +79,11 @@ async function run() {
 
     })
 
-    app.post("/touristsSpot", async(req, res) =>{
-        const tourists = req.body
-        const result = await touristsSpotCollection.insertOne(tourists);
-        res.send(result)
+    app.delete("/touristsSpot/:id", async(req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) };
+      const result = await touristsSpotCollection.deleteOne(query);
+      res.send(result)
     })
 
 
